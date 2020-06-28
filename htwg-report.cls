@@ -87,13 +87,52 @@
 %% BIB
 \RequirePackage[
 	backend=biber,
-	style=alphabetic,
+	style=ext-authoryear,
 	sorting=ynt
 ]{biblatex}
+
+\DeclareOuterCiteDelims{parencite}{\bibopenbracket}{\bibclosebracket}
+\DeclareFieldFormat{citehyperref}{%
+  \DeclareFieldAlias{bibhyperref}{noformat}% Avoid nested links
+  \bibhyperref{#1}}
+
+\DeclareFieldFormat{textcitehyperref}{%
+  \DeclareFieldAlias{bibhyperref}{noformat}% Avoid nested links
+  \bibhyperref{%
+    #1%
+    \ifbool{cbx:parens}
+      {\bibcloseparen\global\boolfalse{cbx:parens}}
+      {}}}
+
+\savebibmacro{cite}
+\savebibmacro{textcite}
+
+\renewbibmacro*{cite}{%
+  \printtext[citehyperref]{%
+    \restorebibmacro{cite}%
+    \usebibmacro{cite}}}
+
+\renewbibmacro*{textcite}{%
+  \ifboolexpr{
+    ( not test {\iffieldundef{prenote}} and
+      test {\ifnumequal{\value{citecount}}{1}} )
+    or
+    ( not test {\iffieldundef{postnote}} and
+      test {\ifnumequal{\value{citecount}}{\value{citetotal}}} )
+  }
+    {\DeclareFieldAlias{textcitehyperref}{noformat}}
+    {}%
+  \printtext[textcitehyperref]{%
+    \restorebibmacro{textcite}%
+    \usebibmacro{textcite}}}
+
+\renewcommand{\baselinestretch}{1.2}
+\setlength{\parskip}{\smallskipamount}
+\setlength{\parindent}{0pt}
+
 \DefineBibliographyStrings{english}{%
   bibliography = {References},
 }
-
 
 \ifxetex
     %% If the document is compiled with XeLaTeX, we load the
@@ -373,23 +412,23 @@
         \begingroup
             \ifx\@report@type\bachelor
                 \node at (15.8mm,-82.1mm)[anchor=center]{
-                    \includegraphics[scale=0.165]{cover/B_black}
+                    \includegraphics[scale=0.165]{B_black}
                 };
                 \node at (36.8mm,-250.1mm)[anchor=center]{
-                    \includegraphics[scale=0.17]{cover/S_black}
+                    \includegraphics[scale=0.17]{S_black}
                 };
                 \node at (162.8mm,-124.1mm)[anchor=center]{
-                    \includegraphics[scale=0.15]{cover/C_black}
+                    \includegraphics[scale=0.15]{C_black}
                 };
             \else\ifx\@report@type\master
                 \node at (15.8mm,-82.1mm)[anchor=center]{
-                    \includegraphics[scale=0.165]{cover/M_black}
+                    \includegraphics[scale=0.165]{M_black}
                 };
                 \node at (36.8mm,-250.1mm)[anchor=center]{
-                    \includegraphics[scale=0.17]{cover/S_black}
+                    \includegraphics[scale=0.17]{S_black}
                 };
                 \node at (162.8mm,-124.1mm)[anchor=center]{
-                    \includegraphics[scale=0.15]{cover/C_black}
+                    \includegraphics[scale=0.15]{C_black}
                 };
             \else
               %nothing%
@@ -415,11 +454,11 @@
         \node at (139.8mm,-37mm)[anchor=north west, fill=htwg-dark-blue]{
             \begin{minipage}[t]{55mm}
                 \begin{flushleft}
-                    \color{htwg-white}\scriptsize\textbf{Submitted by}
+                    \color{htwg-white}\scriptsize\textbf{Eingereicht von}
                     \linebreak
                     \color{htwg-white}\scriptsize{\@author}
                     \linebreak 
-                    \color{htwg-white}\scriptsize{Student Number \@student@number}
+                    \color{htwg-white}\scriptsize{Matrikel-Nummer \@student@number}
                     \linebreak
                     \linebreak
                     \color{htwg-white}\scriptsize{\@student@email}

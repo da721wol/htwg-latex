@@ -10,3 +10,4 @@
 
 see: [HTWG Konstanz Corporate-Design-Logo](https://www.htwg-konstanz.de/hochschule/einrichtungen/stabsstelle-kommunikation/corporate-design-logo/)
 
+Deutsche Version des Templates.
